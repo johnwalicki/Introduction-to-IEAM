@@ -23,11 +23,13 @@ This Code@Think lab session is available for IBM Think 2021 conference attendees
 - Access the Think 2021 Lab virtual machine environment
 - Learn about IEAM components
 - Explore the IEAM web console
+- Register an Edge node
+-
 
 ## Access to the Think 2021 Lab Environment
 
 - Select **sysadmin**
-  ![VM login screen](screenshots/VM-login-screen.png) screenshot
+  ![VM login screen](screenshots/VM-login-screen.png)
 
 - Login Credentials for the virtual machine are stored in the toolbar
 - Click on the **Keys** icon in the top toolbar
@@ -46,20 +48,16 @@ This lab will use several components within the RHEL Gnome desktop environment:
 - a terminal window to execute `hzn` Horizon edge agent commands
 - a browser window with access to the IBM Edge Application Manager web console
 - this GitHub repository / PDF which provides exercises to learn about IEAM, the Horizon agent, and containerized edge workloads
-- Select the Lab workbook Firefox icon (if you prefer Chrome, select the Chrome icon and then open the 'Lab workbook' from the bookmark bar)
-- The browser will open to the [Introduction to IBM Edge Application Manager - IEAM](https://github.com/johnwalicki/Introduction-to-IEAM)] github repo
+- Select the Lab workbook Firefox icon (if you prefer Chrome, select the Chrome icon and then open the 'Lab Workbook' from the bookmark bar)
+- The browser will open to the [Introduction to IBM Edge Application Manager - IEAM](https://github.com/johnwalicki/Introduction-to-IEAM) github repo
 
-### IEAM Component Defintions
+### IEAM Component Definitions
 
-Before proceeding to the lab instructions, let's review some IEAM component definitions
+Before proceeding to the lab instructions, let's review some IEAM component definitions.
 
-#### IEAM Management Hub
+*IEAM Management Hub* - The web UI used by IEAM administrators to view and manage the other components of IBM Edge Application Manager.
 
-The web UI used by IEAM administrators to view and manage the other components of IBM Edge Application Manager.
-
-#### Node
-
-Typically, **edge devices** have a prescriptive purpose, provide (often limited) compute capabilities, and are located near or at the data source. Currently [supported IEAM edge device OS and architectures](https://www.ibm.com/docs/en/edge-computing/4.2?topic=devices-preparing-edge-device#suparch-horizon):
+*Node* - Typically, **edge devices** have a prescriptive purpose, provide (often limited) compute capabilities, and are located near or at the data source. Currently [supported IEAM edge device OS and architectures](https://www.ibm.com/docs/en/edge-computing/4.2?topic=devices-preparing-edge-device#suparch-horizon):
 
 - x86_64
   - Linux x86_64 devices or virtual machines that run Ubuntu 20.x (focal), Ubuntu 18.x (bionic), Debian 10 (buster), Debian 9 (stretch)
@@ -76,23 +74,17 @@ Typically, **edge devices** have a prescriptive purpose, provide (often limited)
 - Mac
   - macOS
 
-### Containerized Workload
+*Containerized Workload* - Any Docker/OCI containerized service, microservice, or piece of software that does meaningful work when it runs on an edge node.
 
-Any Docker/OCI containerized service, microservice, or piece of software that does meaningful work when it runs on an edge node.
+*Service* - A service that is designed specifically to be deployed on an edge cluster, edge gateway, or edge device. Visual recognition, acoustic insights, and speech recognition are all examples of potential edge services.
 
-### Service
+*Pattern*
 
-A service that is designed specifically to be deployed on an edge cluster, edge gateway, or edge device. Visual recognition, acoustic insights, and speech recognition are all examples of potential edge services.
+*Policy*
 
-### Pattern
+*IEAM Edge Cluster* - IBM Edge Application Manager (IEAM) [edge cluster capability](https://www.ibm.com/docs/en/edge-computing/4.2?topic=nodes-edge-clusters) helps you manage and deploy workloads from a management hub cluster to remote instances of OpenShift® Container Platform or other Kubernetes-based clusters. Edge clusters are IEAM edge nodes that are Kubernetes clusters. An edge cluster enables use cases at the edge, which require colocation of compute with business operations, or that require more scalability, availability, and compute capability than what can be supported by an edge device.  IEAM edge cluster configuration is outside the scope of this introduction lab.
 
-### Policy
-
-### IEAM Edge Cluster
-
-IBM Edge Application Manager (IEAM) [edge cluster capability](https://www.ibm.com/docs/en/edge-computing/4.2?topic=nodes-edge-clusters) helps you manage and deploy workloads from a management hub cluster to remote instances of OpenShift® Container Platform or other Kubernetes-based clusters. Edge clusters are IEAM edge nodes that are Kubernetes clusters. An edge cluster enables use cases at the edge, which require colocation of compute with business operations, or that require more scalability, availability, and compute capability than what can be supported by an edge device.  IEAM edge cluster configuration is outside the scope of this introduction lab.
-
-### Architecture
+## Architecture
 
 The goal of edge computing is to harness the disciplines that have been created for hybrid cloud computing to support remote operations of edge computing facilities. IEAM is designed for that purpose.
 
@@ -140,13 +132,15 @@ The VM provided during the Think 2021 lab will be your "edge device" for the lab
 
   ![HZN env vars](screenshots/VM-Terminal-HZN-envvars.png) **Note:** (the urls and iamapikey have been blurred in the public screenshots)
 
-- Set your HZN_NODE_ID environment variable to something unique which will allow you to find your "edge" device in the IEAM management console.  eg `think-edge-yourname`
+- Set your HZN_NODE_ID environment variable to something unique which will allow you to find your "edge" device in the IEAM management console.  eg `think-edge-<yourname>`
 
    ```sh
-   export HZN_NODE_ID=think-edge-yourname
+   export HZN_NODE_ID=think-edge-<yourname>
    ```
 
-   ![Set HZN Node ID env var](screenshots/VM-Terminal-HZN-envvars.png)
+   ![Set HZN Node ID env var](screenshots/VM-Terminal-HZN-node-id.png)
+
+- **Stop** : Did you `export HZN_NODE_ID=think-edge-<yourname>` as required in the above step?  You won't be able to find your device in the IEAM mgmt console if you don't set a node name.
 - Install / Register your edge node
 
   ```sh
@@ -156,9 +150,18 @@ The VM provided during the Think 2021 lab will be your "edge device" for the lab
   ![Horizon Agent Install](screenshots/VM-Terminal-agent-install.png)
   Use the **Keys** toolbar to insert the `sysadmin` password at the `sudo` prompt
 
-- Return to the IEAM web console.  Refresh, Find your device
+- When the node registration completes, it will have also configured an `IBM/ibm.helloworld` pattern to execute on this node.
+  ![Horizon Agent Install](screenshots/VM-Terminal-agent-install-success.png)
 
-  ![IEAM node list](screenshots/VM-IEAM-home.png)
+- Return to the IEAM web console.  Refresh, Find your device
+  ![IEAM node list](screenshots/VM-IEAM-node-list.png)
+- If you don't see your node, or you skipped the step which sets the name of your edge node, `export HZN_NODE_ID=think-edge-<yourname>` , you can unregister the node and try again.
+
+  ```sh
+  sudo hzn unregister -vrfD
+  export HZN_NODE_ID=think_edge_<yourname>
+  sudo -s -E ./agent-install.sh -i 'css:' -p IBM/pattern-ibm.helloworld -w '*' -T 120
+  ```
 
 - Return to the Terminal window. See what agreements are running.
 
@@ -166,22 +169,32 @@ The VM provided during the Think 2021 lab will be your "edge device" for the lab
   hzn agreement list
   ```
 
-### Using the Horizon HZN command line
-The IEAM management hub installation includes several services should have been published into the exchange automatically. The following three command will list the services, patterns, and deployment policies available in your exchange:
+  ![HZN cli](screenshots/VM-Terminal-HZN-agbot.png)
 
-**Note:** The above commands assume you have the Horizon environment variables `HZN_ORG_ID` and `HZN_EXCHANGE_USER_AUTH` set
+- Query details about your node
+
+  ```sh
+  hzn node list IBM/
+  ```
+
+  ![HZN cli](screenshots/VM-Terminal-HZN-node-list.png)
+
+### Using the Horizon HZN command line
+The IEAM management hub installation includes several services which have been published into the exchange automatically. The following commands will list the services, patterns, and deployment policies available in your exchange:
+
+**Note:** The following commands assume you have the Horizon environment variables `HZN_ORG_ID` and `HZN_EXCHANGE_USER_AUTH` set
 
 ```sh
 hzn exchange service list IBM/
 ```
 
-![HZN cli](screenshots/VM-Terminal-HZN-envvars.png)
+![HZN cli](screenshots/VM-Terminal-HZN-ex-srv-list.png)
 
 ```sh
 hzn exchange pattern list IBM/
 ```
 
-![HZN cli](screenshots/VM-Terminal-HZN-envvars.png)
+![HZN cli](screenshots/VM-Terminal-HZN-ex-pat-list.png)
 
 ```sh
 hzn exchange deployment listpolicy
@@ -189,23 +202,28 @@ hzn exchange deployment listpolicy
 
 ![HZN cli](screenshots/VM-Terminal-HZN-envvars.png)
 
+- Review the event log for this node.
+
 ```sh
-hzn eventlog list -s severity=error -l
+hzn eventlog list
 ```
 
-![](screenshots/VM-Terminal-HZN-envvars.png)
+![](screenshots/VM-Terminal-HZN-eventlog-list.png)
 
-### Web Hello containerized workload
+## Web Hello containerized workload
 
 Create a Web Hello service
 
+- intro to the web-hello service
+- https://github.com/MegaMosquito/web-hello
 - cli
 - node properties
 - Open a browser to the port
 
-### SpeedTest to MQTT containerized workload
+## SpeedTest to MQTT containerized workload
 
-- Create a SpeedTest
+- Intro to the Speedtest workload
+- Create a SpeedTest service, screenshots
 - Open a Browser to QuickStart
 - Enter your HZN node id
 
