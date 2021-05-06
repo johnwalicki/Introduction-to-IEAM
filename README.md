@@ -57,34 +57,36 @@ This lab will use several components within the RHEL Gnome desktop environment:
 
 Before proceeding to the lab instructions, let's review some IEAM component definitions.
 
-*IEAM Management Hub* - The web UI used by IEAM administrators to view and manage the other components of IBM Edge Application Manager.
-
-*Node* - Typically, **edge devices** have a prescriptive purpose, provide (often limited) compute capabilities, and are located near or at the data source. Currently [supported IEAM edge device OS and architectures](https://www.ibm.com/docs/en/edge-computing/4.2?topic=devices-preparing-edge-device#suparch-horizon):
-
-- x86_64
-  - Linux x86_64 devices or virtual machines that run Ubuntu 20.x (focal), Ubuntu 18.x (bionic), Debian 10 (buster), Debian 9 (stretch)
-  - Red Hat Enterprise Linux® 8.2
-  - Fedora Workstation 32
-  - CentOS 8.2
-  - SuSE 15 SP2
-- ppc64le (support starting Horizon version 2.28)
-  - Red Hat Enterprise Linux® 7.9
-- ARM (32-bit)
-  - Linux on ARM (32-bit), for example Raspberry Pi, running Raspberry Pi OS buster or stretch
-- ARM (64-bit)
-  - Linux on ARM (64-bit), for example NVIDIA Jetson Nano, TX1, or TX2, running Ubuntu 18.x (bionic)
-- Mac
-  - macOS
-
-*Containerized Workload* - Any Docker/OCI containerized service, microservice, or piece of software that does meaningful work when it runs on an edge node.
-
-*Service* - A service that is designed specifically to be deployed on an edge cluster, edge gateway, or edge device. Visual recognition, acoustic insights, and speech recognition are all examples of potential edge services.
-
-*Pattern* -
-
-*Policy* -
+- *IEAM Management Hub* - The web UI used by IEAM administrators to view and manage the other components of IBM Edge Application Manager.
+- *Node* - Typically, **edge devices** have a prescriptive purpose, provide (often limited) compute capabilities, and are located near or at the data source. Currently [supported IEAM edge device OS and architectures](https://www.ibm.com/docs/en/edge-computing/4.2?topic=devices-preparing-edge-device#suparch-horizon):
+    - x86_64
+    - Linux x86_64 devices or virtual machines that run Ubuntu 20.x (focal), Ubuntu 18.x (bionic), Debian 10 (buster), Debian 9 (stretch)
+    - Red Hat Enterprise Linux® 8.2
+    - Fedora Workstation 32
+    - CentOS 8.2
+    - SuSE 15 SP2
+    - ppc64le (support starting Horizon version 2.28)
+    - Red Hat Enterprise Linux® 7.9
+    - ARM (32-bit)
+    - Linux on ARM (32-bit), for example Raspberry Pi, running Raspberry Pi OS buster or stretch
+    - ARM (64-bit)
+    - Linux on ARM (64-bit), for example NVIDIA Jetson Nano, TX1, or TX2, running Ubuntu 18.x (bionic)
+    - Mac
+    - macOS
+- *Containerized Workload* - Any Docker/OCI containerized service, microservice, or piece of software that does meaningful work when it runs on an edge node.
+- *Service* - A service that is designed specifically to be deployed on an edge cluster, edge gateway, or edge device. Visual recognition, acoustic insights, and speech recognition are all examples of potential edge services.
+- *properties* - name/value pairs, often used to describe attributes of nodes (like model, serial number, role, capabilities, attached hardware. etc.) or attributes of a service or deployment (see “policy”).
+- *constraints* - logical expressions in terms of “properties”. Constraints are used to control and manage software deployment to edge nodes.
+- *policy* - a collection of zero or more properties and zero or more constraints, sometimes with additional data fields (see “node policy”, “service policy”, and “deployment policy”
+- *node policy* - a set of properties and constraints related to an edge node (either a stand-alone Linux edge node or a Kubernetes cluster node)
+- *service policy* - a set of properties and constraints related to a specific deployable service
+- *business policy* - (deprecated) the former name for “deployment policy”
+- *deployment policy* - a set of properties and constraints related to the deployment of a specific service together with an identifier for the service version to deploy, and other informatuion such as how rollbacks should be handled when failures occur.
+- *pattern* - another name for “deployment pattern”
+- *deployment pattern* - a list of specific deployable services. Patterns are a simplification of the more general, and more capable, “policy” mechanism. Edge nodes can register with a deployment pattern to cause the pattern’s set of services to be deployed.
 
 *IEAM Edge Cluster* - IBM Edge Application Manager (IEAM) [edge cluster capability](https://www.ibm.com/docs/en/edge-computing/4.2?topic=nodes-edge-clusters) helps you manage and deploy workloads from a management hub cluster to remote instances of OpenShift® Container Platform or other Kubernetes-based clusters. Edge clusters are IEAM edge nodes that are Kubernetes clusters. An edge cluster enables use cases at the edge, which require colocation of compute with business operations, or that require more scalability, availability, and compute capability than what can be supported by an edge device.  IEAM edge cluster configuration is outside the scope of this introduction lab.
+
 
 ## Architecture
 
@@ -159,6 +161,14 @@ The virtual machine lab environment provided during the Think 2021 lab will be y
 - When the node registration completes, it will have also configured an `IBM/ibm.helloworld` pattern to execute on this node.
   ![Horizon Agent Install](screenshots/VM-Terminal-agent-install-success.png)
 
+- Query the version that was installed
+
+```sh
+hzn version
+Horizon CLI version: 2.28.0-338
+Horizon Agent version: 2.28.0-338
+```
+
 - Return to the IEAM web console.  Refresh, Find your device
   ![IEAM node list](screenshots/VM-IEAM-node-list.png)
 - If you don't see your node, or you skipped the step which sets the name of your edge node, `export HZN_NODE_ID=think-edge-<yourname>` , you can unregister the node and try again.
@@ -186,6 +196,13 @@ The virtual machine lab environment provided during the Think 2021 lab will be y
   ![HZN cli](screenshots/VM-Terminal-HZN-node-list.png)
 
 ### Using the Horizon HZN command line
+
+There are many horizon command line interface parameters.  This section will explore some of them.
+
+```sh
+hzn help
+```
+
 The IEAM management hub installation includes several services which have been published into the exchange automatically. The following commands will list the services, patterns, and deployment policies available in your exchange:
 
 **Note:** The following commands assume you have the Horizon environment variables `HZN_ORG_ID` and `HZN_EXCHANGE_USER_AUTH` set
@@ -213,6 +230,7 @@ hzn exchange deployment listpolicy
 ```sh
 hzn eventlog list
 ```
+-
 
 ![](screenshots/VM-Terminal-HZN-eventlog-list.png)
 
@@ -234,11 +252,11 @@ Create a Web Hello service
 - Enter your HZN node id
 
 ## Additional Resources
-https://www.lfedge.org/projects/openhorizon/
-https://github.com/open-horizon/
-https://www.ibm.com/docs/en/edge-computing/4.2
-https://www.ibm.com/docs/en/edge-computing/4.2?topic=agent-automated-installation-registration
-https://github.com/open-horizon/examples
+- https://www.lfedge.org/projects/openhorizon/
+- https://github.com/open-horizon/
+- https://www.ibm.com/docs/en/edge-computing/4.2
+- https://www.ibm.com/docs/en/edge-computing/4.2?topic=agent-automated-installation-registration
+- https://github.com/open-horizon/examples
 
 ### Author
 
