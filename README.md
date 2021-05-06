@@ -24,7 +24,9 @@ This Code@Think lab session is available for IBM Think 2021 conference attendees
 - Learn about IEAM components
 - Explore the IEAM web console
 - Register an Edge node
--
+- Experiment with the hzn command line interface
+- Configure IEAM Services and Policies
+- Deploy containerized workloads to your edge device
 
 ## Access to the Think 2021 Lab Environment
 
@@ -78,9 +80,9 @@ Before proceeding to the lab instructions, let's review some IEAM component defi
 
 *Service* - A service that is designed specifically to be deployed on an edge cluster, edge gateway, or edge device. Visual recognition, acoustic insights, and speech recognition are all examples of potential edge services.
 
-*Pattern*
+*Pattern* -
 
-*Policy*
+*Policy* -
 
 *IEAM Edge Cluster* - IBM Edge Application Manager (IEAM) [edge cluster capability](https://www.ibm.com/docs/en/edge-computing/4.2?topic=nodes-edge-clusters) helps you manage and deploy workloads from a management hub cluster to remote instances of OpenShift® Container Platform or other Kubernetes-based clusters. Edge clusters are IEAM edge nodes that are Kubernetes clusters. An edge cluster enables use cases at the edge, which require colocation of compute with business operations, or that require more scalability, availability, and compute capability than what can be supported by an edge device.  IEAM edge cluster configuration is outside the scope of this introduction lab.
 
@@ -107,18 +109,22 @@ In this section, explore the IEAM mgmt web console.
 - Login into the IEAM console
   ![IEAM login screen](screenshots/VM-IEAM-login.png)
 - The `thinkuser` userid / password are already saved in your browser keystore but if you need to, use the **Keys** toolbar to insert the password.
-- If you receive a `403` error, modify the browser URL in the address bar, remove the `common-nav/403` and replace it with `edge`
 ![IEAM home screen](screenshots/VM-IEAM-home.png)
-
+- **Note:** If you receive a `403` error, modify the browser URL in the address bar, remove the `common-nav/403` and replace it with `edge`
 - Nodes
+  - Manage the node properties and constraints
   - **Note** there are only a few edge nodes registered. In a subsequent section of the lab, your edge node will appear here.
+  ![IEAM node list](screenshots/VM-IEAM-node-list.png)
 - Services
+  ![IEAM services tiles](screenshots/VM-IEAM-Services-tiles.png)
 - Patterns
+  ![IEAM patterns list](screenshots/VM-IEAM-Patterns-list.png)
 - Policies
+  ![IEAM policies list](screenshots/VM-IEAM-Policies-list.png)
 
 ### Explore the "Edge" Device
 
-The VM provided during the Think 2021 lab will be your "edge device" for the lab today. Normally, your edge device might be an industrial computer, small board computer, etc.
+The virtual machine lab environment provided during the Think 2021 lab will be your "edge device" today. Normally, your edge device might be an industrial computer, small board computer, etc.
 
 - Click on the **Terminal** icon and launch a console window.
   ![Open a Terminal](screenshots/VM-Terminal-launch.png)
@@ -174,7 +180,7 @@ The VM provided during the Think 2021 lab will be your "edge device" for the lab
 - Query details about your node
 
   ```sh
-  hzn node list IBM/
+  hzn node list
   ```
 
   ![HZN cli](screenshots/VM-Terminal-HZN-node-list.png)
