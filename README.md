@@ -9,6 +9,7 @@ Successfully deploy models to the edge using IBM Edge Application Manager worklo
 Gain hands-on experience with the IBM Edge Application Manager web management console. Install the Horizon agent, then deploy and manage a Horizon edge service on your edge device.
 
 This Code@Think lab session is available for IBM Think 2021 conference attendees (Sign up for Free!)
+
 - Wednesday, May 12, 2021 3:00 PM to 5:00 PM EDT
 
 ## Prerequistes
@@ -16,7 +17,7 @@ This Code@Think lab session is available for IBM Think 2021 conference attendees
 - Create a free [IBM Cloud account](https://cloud.ibm.com/registration)
 - [Sign up](https://ibm.app.swapcard.com/event/think21) for [Think 2021](https://www.ibm.com/events/think/)
 - Register for the [Introduction to IEAM lab](https://ibm.app.swapcard.com/event/think21/planning/UGxhbm5pbmdfNDQyMTk4)
-- Join us on Wednesday, May 12, 2021 3:00 PM to 5:00 PM EDT
+- Join us on Wednesday, May 12, 2021 3:00 PM to 5:00 PM EDT by logging into the [Think portal](https://ibm.app.swapcard.com/event/think21/my-visit/my-schedule)
 
 ## Lab Objectives
 
@@ -44,6 +45,7 @@ This Code@Think lab session is available for IBM Think 2021 conference attendees
 ### Navigating the Virtual Machine
 
 This lab will use several components within the RHEL Gnome desktop environment:
+
 - Review the desktop
   ![VM RHEL Gnome Desktop](screenshots/VM-Gnome-Desktop.png)
 
@@ -59,19 +61,19 @@ Before proceeding to the lab instructions, let's review some IEAM component defi
 
 - *IEAM Management Hub* - The web UI used by IEAM administrators to view and manage the other components of IBM Edge Application Manager.
 - *Node* - Typically, **edge devices** have a prescriptive purpose, provide (often limited) compute capabilities, and are located near or at the data source. Currently [supported IEAM edge device OS and architectures](https://www.ibm.com/docs/en/edge-computing/4.2?topic=devices-preparing-edge-device#suparch-horizon):
-    - x86_64
+  - x86_64
     - Linux x86_64 devices or virtual machines that run Ubuntu 20.x (focal), Ubuntu 18.x (bionic), Debian 10 (buster), Debian 9 (stretch)
     - Red Hat Enterprise Linux® 8.2
     - Fedora Workstation 32
     - CentOS 8.2
     - SuSE 15 SP2
-    - ppc64le (support starting Horizon version 2.28)
+  - ppc64le (support starting Horizon version 2.28)
     - Red Hat Enterprise Linux® 7.9
-    - ARM (32-bit)
+  - ARM (32-bit)
     - Linux on ARM (32-bit), for example Raspberry Pi, running Raspberry Pi OS buster or stretch
-    - ARM (64-bit)
+  - ARM (64-bit)
     - Linux on ARM (64-bit), for example NVIDIA Jetson Nano, TX1, or TX2, running Ubuntu 18.x (bionic)
-    - Mac
+  - Mac
     - macOS
 - *Containerized Workload* - Any Docker/OCI containerized service, microservice, or piece of software that does meaningful work when it runs on an edge node.
 - *Service* - A service that is designed specifically to be deployed on an edge cluster, edge gateway, or edge device. Visual recognition, acoustic insights, and speech recognition are all examples of potential edge services.
@@ -84,9 +86,7 @@ Before proceeding to the lab instructions, let's review some IEAM component defi
 - *deployment policy* - a set of properties and constraints related to the deployment of a specific service together with an identifier for the service version to deploy, and other informatuion such as how rollbacks should be handled when failures occur.
 - *pattern* - another name for “deployment pattern”
 - *deployment pattern* - a list of specific deployable services. Patterns are a simplification of the more general, and more capable, “policy” mechanism. Edge nodes can register with a deployment pattern to cause the pattern’s set of services to be deployed.
-
-*IEAM Edge Cluster* - IBM Edge Application Manager (IEAM) [edge cluster capability](https://www.ibm.com/docs/en/edge-computing/4.2?topic=nodes-edge-clusters) helps you manage and deploy workloads from a management hub cluster to remote instances of OpenShift® Container Platform or other Kubernetes-based clusters. Edge clusters are IEAM edge nodes that are Kubernetes clusters. An edge cluster enables use cases at the edge, which require colocation of compute with business operations, or that require more scalability, availability, and compute capability than what can be supported by an edge device.  IEAM edge cluster configuration is outside the scope of this introduction lab.
-
+- *IEAM Edge Cluster* - IBM Edge Application Manager (IEAM) [edge cluster capability](https://www.ibm.com/docs/en/edge-computing/4.2?topic=nodes-edge-clusters) helps you manage and deploy workloads from a management hub cluster to remote instances of OpenShift® Container Platform or other Kubernetes-based clusters. Edge clusters are IEAM edge nodes that are Kubernetes clusters. An edge cluster enables use cases at the edge, which require colocation of compute with business operations, or that require more scalability, availability, and compute capability than what can be supported by an edge device.  IEAM edge cluster configuration is outside the scope of this introduction lab.
 
 ## Architecture
 
@@ -230,19 +230,68 @@ hzn exchange deployment listpolicy
 ```sh
 hzn eventlog list
 ```
--
 
-![](screenshots/VM-Terminal-HZN-eventlog-list.png)
+![HZN cli eventlog](screenshots/VM-Terminal-HZN-eventlog-list.png)
 
 ## Web Hello containerized workload
 
-Create a Web Hello service
+In this exercise, we will create a Web Hello service that runs a containerized HTTP server workload on your edge device.  The [web-hello-python](https://github.com/TheMosquito/web-hello-python) example is an extremely simple HTTP server (written in Python) that responds on port 8000 with a hello message.
 
-- intro to the web-hello service
-- https://github.com/MegaMosquito/web-hello
-- cli
-- node properties
-- Open a browser to the port
+The core principle of IBM Edge Application Manager is to orchestrate containizered workloads, at scale, on edge devices.  Edge developers should be familiar with creating Docker containers optimized for (CPU/Memory/Power) constrained devices.  This example builds a small container, pushes it to your Docker Hub registry and creates a service and pattern in the IEAM exchange hub.
+
+The source / instructions to build the container are posted in the [web-hello-python](https://github.com/TheMosquito/web-hello-python) github repository, but are copied here for the lab exercise.
+
+- Open a Terminal window in your virtual machine
+- Clone the github repository:
+
+  ```sh
+  git clone https://github.com/TheMosquito/web-hello-python
+  ```
+
+- Log into your Docker Hub account so the container can be hosted for edge deployment
+
+  ```sh
+  docker login
+  ```
+
+- Edit the variables at the top of the Makefile as desired. If you plan to push it to a Docker registery, make sure you give your docker ID. You may also want to create unique names for your service and pattern (necessary for this lab in the multi-tenant IEAM instance that is shared with other lab participants and you are all publishing this service).
+  - gedit / vi / nano editors are available
+  - Change the following `Makefile` lines:
+
+    ```make
+    DOCKERHUB_ID:=<your docker registry account>
+    SERVICE_NAME:="web-hello-python-<yourname>"
+    SERVICE_VERSION:="1.0.0"
+    PATTERN_NAME:="pattern-web-hello-python-<yourname>"
+    ```
+
+- Create a hzn cryptographic signing keys. All edge services and deployment patterns must be cryptographically signed. If you do not already have an appropriate asymmetric cryptographic signing key pair, you must create a key pair that you can use for signing. If you need to create a new key pair, run the following command:
+
+  ```sh
+  hzn key create **yourcompany** **youremail**
+  ```
+
+  This command creates the following two files:
+
+    ```sh
+    ~/.hzn/keys/service.private.key
+    ~/.hzn/keys/service.public.pem
+    ```
+
+- Build the container, push the container to the Docker registry, publish the service and publish the pattern
+
+  ```sh
+  make build
+  make push
+  make publish-service
+  make publish-pattern
+  make register-pattern
+  watch hzn agreement list
+  ...
+  make test
+  ```
+
+- Test your containerize workload
 
 ## SpeedTest to MQTT containerized workload
 
@@ -252,6 +301,7 @@ Create a Web Hello service
 - Enter your HZN node id
 
 ## Additional Resources
+
 - https://www.lfedge.org/projects/openhorizon/
 - https://github.com/open-horizon/
 - https://www.ibm.com/docs/en/edge-computing/4.2
