@@ -29,6 +29,8 @@ This Code@Think lab session is available for IBM Think 2021 conference attendees
 - Configure IEAM Services and Policies
 - Deploy containerized workloads to your edge device
 
+<div style="page-break-after: always"></div>
+
 ## Access to the Think 2021 Lab Environment
 
 - Select **sysadmin**
@@ -41,6 +43,8 @@ This Code@Think lab session is available for IBM Think 2021 conference attendees
 - A drop down dialog will appear with various credentials used in this lab
 - Click on the **Insert** button for the sysadmin password
 - Click on the **Sign In** button
+
+<div style="page-break-after: always"></div>
 
 ### Navigating the Virtual Machine
 
@@ -88,6 +92,8 @@ Before proceeding to the lab instructions, let's review some IEAM component defi
 - *deployment pattern* - a list of specific deployable services. Patterns are a simplification of the more general, and more capable, “policy” mechanism. Edge nodes can register with a deployment pattern to cause the pattern’s set of services to be deployed.
 - *IEAM Edge Cluster* - IBM Edge Application Manager (IEAM) [edge cluster capability](https://www.ibm.com/docs/en/edge-computing/4.2?topic=nodes-edge-clusters) helps you manage and deploy workloads from a management hub cluster to remote instances of OpenShift® Container Platform or other Kubernetes-based clusters. Edge clusters are IEAM edge nodes that are Kubernetes clusters. An edge cluster enables use cases at the edge, which require colocation of compute with business operations, or that require more scalability, availability, and compute capability than what can be supported by an edge device.  IEAM edge cluster configuration is outside the scope of this introduction lab.
 
+<div style="page-break-after: always"></div>
+
 ## Architecture
 
 The goal of edge computing is to harness the disciplines that have been created for hybrid cloud computing to support remote operations of edge computing facilities. IEAM is designed for that purpose.
@@ -99,6 +105,8 @@ These edge nodes can be installed in remote on-premises locations to make your a
 The following diagram depicts the high-level topology for a typical edge computing setup:
 
 ![IEAM Architecture diagram](https://www.ibm.com/docs/en/SSFKVV_4.2/images/edge/01_IEAM_overview.svg)
+
+<div style="page-break-after: always"></div>
 
 ## Let's Get Started
 
@@ -132,6 +140,7 @@ The virtual machine lab environment provided during the Think 2021 lab will be y
   ![Open a Terminal](screenshots/VM-Terminal-launch.png)
 
 - To simplify the edge lab setup, the HZN environment variables have been pre-configured in the ~/.bashrc profile
+<div style="page-break-after: always"></div>
 - Inspect the HZN environment variables by entering this shell pipeline
 
   ```sh
@@ -182,7 +191,7 @@ Horizon Agent version: 2.28.0-338
 - Return to the Terminal window. See what agreements are running.
 
   ```sh
-  hzn agreement list
+  watch hzn agreement list
   ```
 
   ![HZN cli](screenshots/VM-Terminal-HZN-agbot.png)
@@ -194,6 +203,8 @@ Horizon Agent version: 2.28.0-338
   ```
 
   ![HZN cli](screenshots/VM-Terminal-HZN-node-list.png)
+
+<div style="page-break-after: always"></div>
 
 ### Using the Horizon HZN command line
 
@@ -213,6 +224,8 @@ hzn exchange service list IBM/
 
 ![HZN cli](screenshots/VM-Terminal-HZN-ex-srv-list.png)
 
+<div style="page-break-after: always"></div>
+
 ```sh
 hzn exchange pattern list IBM/
 ```
@@ -225,6 +238,8 @@ hzn exchange deployment listpolicy
 
 ![HZN cli](screenshots/VM-Terminal-HZN-envvars.png)
 
+<div style="page-break-after: always"></div>
+
 - Review the event log for this node.
 
 ```sh
@@ -232,6 +247,8 @@ hzn eventlog list
 ```
 
 ![HZN cli eventlog](screenshots/VM-Terminal-HZN-eventlog-list.png)
+
+<div style="page-break-after: always"></div>
 
 ## Web Hello containerized workload
 
@@ -245,7 +262,9 @@ The source / instructions to build the container are posted in the [web-hello-py
 - Clone the github repository:
 
   ```sh
+  cd
   git clone https://github.com/TheMosquito/web-hello-python
+  cd web-hello-python
   ```
 
 - Log into your Docker Hub account so the container can be hosted for edge deployment
@@ -254,7 +273,7 @@ The source / instructions to build the container are posted in the [web-hello-py
   docker login
   ```
 
-- Edit the variables at the top of the Makefile as desired. If you plan to push it to a Docker registery, make sure you give your docker ID. You may also want to create unique names for your service and pattern (necessary for this lab in the multi-tenant IEAM instance that is shared with other lab participants and you are all publishing this service).
+- Edit the variables at the top of the Makefile as desired. If you plan to push it to a Docker registry, make sure you give your docker ID. You may also want to create unique names for your service and pattern (necessary for this lab in the multi-tenant IEAM instance that is shared with other lab participants and you are all publishing this service).
   - gedit / vi / nano editors are available
   - Change the following `Makefile` lines:
 
@@ -285,20 +304,138 @@ The source / instructions to build the container are posted in the [web-hello-py
   make push
   make publish-service
   make publish-pattern
+  ```
+
+- Before we can register this containerized workload to run on your specific Horizon edge node, you will need to unregister the prior IEAM pattern. Remember, only one deployment pattern can be registered on an edge node.
+
+  ```sh
+  hzn unregister -v
   make register-pattern
   watch hzn agreement list
   ...
   make test
   ```
 
-- Test your containerize workload
+- Test your containerize workload by opening a browser session to http://localhost:8000
+
+- Test the container on the command line
+
+```sh
+curl -sS http://localhost:8000
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+<meta charset="utf-8">
+
+<title>WebHello</title>
+
+</head>
+<body>
+Hello, "172.17.0.1".
+</body>
+</html>
+```
+
+<div style="page-break-after: always"></div>
 
 ## SpeedTest to MQTT containerized workload
 
-- Intro to the Speedtest workload
-- Create a SpeedTest service, screenshots
-- Open a Browser to QuickStart
-- Enter your HZN node id
+In this exercise, we will create a Docker containerized workload that can be deployed to an edge node running the Open Horizon agent. The workload can be configured as a managed service and pattern in IBM Edge Application Manager. It runs Speedtest periodically and sends the download bandwidth results over MQTT to Watson IoT Platform Quickstart and plots the results in a chart. This example builds a small container, pushes it to your Docker Hub registry and creates a service and pattern in the IEAM exchange hub.
+
+The source / instructions to build the container are posted in the [ieam-speedtest-mqtt](https://github.com/johnwalicki/ieam-speedtest-mqtt) github repository, but are copied here for the lab exercise.
+
+- Open a Terminal window in your virtual machine
+- Clone the github repository:
+
+  ```sh
+  cd
+  git clone https://github.com/johnwalicki/ieam-speedtest-mqtt
+  cd ieam-speedtest-mqtt
+  ```
+
+- Log into your Docker Hub account so the container can be hosted for edge deployment
+
+  ```sh
+  docker login
+  ```
+
+- Edit the variables at the top of the Makefile as desired. If you plan to push it to a Docker registry, make sure you give your docker ID. You may also want to create unique names for your service and pattern (necessary for this lab in the multi-tenant IEAM instance that is shared with other lab participants and you are all publishing this service).
+  - gedit / vi / nano editors are available
+  - Change the following `Makefile` lines:
+
+    ```make
+    DOCKERHUB_ID:=<your docker registry account>
+    SERVICE_NAME:="speedtest-mqtt-example-<yourname>"
+    SERVICE_VERSION:="1.0.0"
+    PATTERN_NAME:="pattern-speedtest-mqtt-example-<yourname>"
+    ```
+
+- The prior section created hzn cryptographic signing keys. If you need to create a new key pair, run the following command:
+
+  ```sh
+  hzn key create **yourcompany** **youremail**
+  ```
+
+  This command creates the following two files:
+
+    ```sh
+    ~/.hzn/keys/service.private.key
+    ~/.hzn/keys/service.public.pem
+    ```
+
+- Build the container, push the container to the Docker registry, publish the service and publish the pattern
+
+  ```sh
+  make build
+  make push
+  ```
+
+- Instead of publishing the service and pattern from the `hzn` command line interface using `make publish-service` and `make publish-pattern`, in this excerise, open the IEAM web console browser page again from the bookmark bar.
+
+  - Select the **Services** tab and click on the **Add service** button.
+    ![IEAM Add Service](screenshots/VM-IEAM-Services-Add.png)
+  - Select the **Edge devices** tile.
+    ![IEAM Add Edge Device Service](screenshots/VM-IEAM-Services-EdgeDevice-tile.png)
+  - Give your service a name, eg `speedtest-mqtt-example-<yourname>`, a Service version number, and a path to the Docker container that was pushed, eg `walicki/speedtest-mqtt-example-instructor:1.0.0`
+    ![IEAM Define Service](screenshots/VM-IEAM-Services-define-service.png)
+  - Press the **Next** button to skip the service variables panel.
+  - Name your container eg `IEAM-speedtest` and press the **Next** button.
+    ![IEAM name Service](screenshots/VM-IEAM-Services-name-service.png)
+  - Press the **Next** button to skip adding constraints to your service.
+  - Press the **Publish Service** button to publish your service.
+    ![IEAM publish Service](screenshots/VM-IEAM-Services-publish-service.png)
+    ![IEAM publish Service](screenshots/VM-IEAM-Service-summary.png)
+
+- Now that the Service is defined, add a pattern
+  - Select the **Patterns** tab and click on the **Add pattern** button.
+    ![IEAM Add Pattern](screenshots/VM-IEAM-Pattern-Add.png)
+  - Give your pattern a name, eg `think/pattern-speedtest-mqtt-example-instructor` and click the **Next** button.
+    ![IEAM Name Pattern](screenshots/VM-IEAM-Pattern-name.png)
+  - Search/Find the `speedtest-mqtt-example-<yourname>` service, press the **Add +** button and the **Next** button.
+    ![Add a deployment pattern](screenshots/VM-IEAM-Pattern-deploy.png)
+  - Press the **Next** button to skip setting service variables for the pattern.
+  - Press the **Publish pattern** button on the confirmation panel.
+    ![Publish pattern](screenshots/VM-IEAM-Pattern-publish.png)
+
+- Before we can register this containerized workload to run on your specific Horizon edge node, you will need to unregister the prior IEAM pattern. Remember, only one deployment pattern can be registered on an edge node.
+  ```sh
+  hzn unregister -v
+  make register-pattern
+  watch hzn agreement list
+  ...
+  make test
+  ```
+
+- Observe the Speedtest bandwidth measured by your containerize workload by visiting [Watson IoT Platform Quickstart](https://quickstart.internetofthings.ibmcloud.com).  Enter your unique HZN_DEVICE_ID environment variable to something unique which will allow you to observe your "edge" device in the QuickStart chart page  eg `think-edge-<yourname>`, then press the **Next** button.
+
+  ![Quickstart Chart of Speedtest bandwidth results](screenshots/Speedtest-Quickstart-results.png)
+
+<div style="page-break-after: always"></div>
+
+##
 
 ## Additional Resources
 
