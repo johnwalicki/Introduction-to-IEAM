@@ -167,7 +167,7 @@ The virtual machine lab environment provided during the Think 2021 lab will be y
   ![Horizon Agent Install](screenshots/VM-Terminal-agent-install.png)
   Use the **Keys** toolbar to insert the `sysadmin` password at the `sudo` prompt
 
-- When the node registration completes, it will have also configured an `IBM/ibm.helloworld` pattern to execute on this node.
+- When the node registration completes, it will have also configured an `IBM/pattern-ibm.helloworld` pattern to execute on this node.
   ![Horizon Agent Install](screenshots/VM-Terminal-agent-install-success.png)
 
 - Query the version that was installed
@@ -393,7 +393,7 @@ The source / instructions to build the container are posted in the [ieam-speedte
   make push
   ```
 
-- Instead of publishing the service and pattern from the `hzn` command line interface using `make publish-service` and `make publish-pattern`, in this excerise, open the IEAM web console browser page again from the bookmark bar.
+- Instead of publishing the service and pattern from the `hzn` command line interface using `make publish-service` and `make publish-pattern`, in this exercise, open the IEAM web console browser page again from the bookmark bar.
 
   - Select the **Services** tab and click on the **Add service** button.
     ![IEAM Add Service](screenshots/VM-IEAM-Services-Add.png)
