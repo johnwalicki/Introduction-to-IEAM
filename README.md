@@ -87,7 +87,7 @@ Before proceeding to the lab instructions, let's review some IEAM component defi
 - *node policy* - a set of properties and constraints related to an edge node (either a stand-alone Linux edge node or a Kubernetes cluster node)
 - *service policy* - a set of properties and constraints related to a specific deployable service
 - *business policy* - (deprecated) the former name for “deployment policy”
-- *deployment policy* - a set of properties and constraints related to the deployment of a specific service together with an identifier for the service version to deploy, and other informatuion such as how rollbacks should be handled when failures occur.
+- *deployment policy* - a set of properties and constraints related to the deployment of a specific service together with an identifier for the service version to deploy, and other information such as how rollbacks should be handled when failures occur.
 - *pattern* - another name for “deployment pattern”
 - *deployment pattern* - a list of specific deployable services. Patterns are a simplification of the more general, and more capable, “policy” mechanism. Edge nodes can register with a deployment pattern to cause the pattern’s set of services to be deployed.
 - *IEAM Edge Cluster* - IBM Edge Application Manager (IEAM) [edge cluster capability](https://www.ibm.com/docs/en/edge-computing/4.2?topic=nodes-edge-clusters) helps you manage and deploy workloads from a management hub cluster to remote instances of OpenShift® Container Platform or other Kubernetes-based clusters. Edge clusters are IEAM edge nodes that are Kubernetes clusters. An edge cluster enables use cases at the edge, which require colocation of compute with business operations, or that require more scalability, availability, and compute capability than what can be supported by an edge device.  IEAM edge cluster configuration is outside the scope of this introduction lab.
@@ -435,7 +435,19 @@ The source / instructions to build the container are posted in the [ieam-speedte
 
 <div style="page-break-after: always"></div>
 
-##
+## Congratulations !
+
+You have completed the **Think 2021 Introduction to IEAM lab**.  There are additional resources below. Continue your IEAM / Open Horizon learning journey by watching the [Open Horizon YouTube video playlist](https://www.youtube.com/playlist?list=PLgohd895XSUddtseFy4HxCqTqqlYfW8Ix).
+
+If you enjoyed the session, give the [Introduction to IEAM](http://github.com/johnwalicki/Introduction-to-IEAM) repository a GitHub star and connect with the [instructors](http://twitter.com/johnwalicki).
+
+Clean up your session before exiting the Virtual Machine by deleting your Docker credentials and unregistering your Horizon edge device.
+
+```sh
+rm -rf ~/.docker
+
+hzn unregister
+```
 
 ## Additional Resources
 
