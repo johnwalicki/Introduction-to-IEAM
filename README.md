@@ -305,7 +305,7 @@ The source / instructions to build the container are posted in the [web-hello-py
 
   ```sh
   hzn unregister -v
-  make register-pattern
+  make agent-run
   watch hzn agreement list
   ...
   make test
