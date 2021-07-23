@@ -338,7 +338,7 @@ Hello, "172.17.0.1".
 
 ## SpeedTest to MQTT containerized workload
 
-In this exercise, we will create a Docker containerized workload that can be deployed to an edge node running the Open Horizon agent. The workload can be configured as a managed service and pattern in IBM Edge Application Manager. It runs Speedtest periodically and sends the download bandwidth results over MQTT to Watson IoT Platform Quickstart and plots the results in a chart. This example builds a small container, pushes it to your Docker Hub registry and creates a service and pattern in the IEAM exchange hub.
+In this exercise, we will create a Docker containerized workload that can be deployed to an edge node running the Open Horizon agent. The workload can be configured as a managed service and pattern in IBM Edge Application Manager. It runs Speedtest periodically and sends the download bandwidth results over MQTT to Watson IoT Platform and plots the results in a chart. This example builds a small container, pushes it to your Docker Hub registry and creates a service and pattern in the IEAM exchange hub.
 
 The source / instructions to build the container are posted in the [ieam-speedtest-mqtt](https://github.com/johnwalicki/ieam-speedtest-mqtt) github repository, but are copied here for the lab exercise.
 
@@ -364,7 +364,7 @@ The source / instructions to build the container are posted in the [ieam-speedte
     ```make
     DOCKERHUB_ID:=<your docker registry account>
     SERVICE_NAME:="speedtest-mqtt-example-<yourname>"
-    SERVICE_VERSION:="1.0.0"
+    SERVICE_VERSION:="2.0.0"
     PATTERN_NAME:="pattern-speedtest-mqtt-example-<yourname>"
     ```
 
@@ -394,7 +394,7 @@ The source / instructions to build the container are posted in the [ieam-speedte
     ![IEAM Add Service](screenshots/VM-IEAM-Services-Add.png)
   - Select the **Edge devices** tile.
     ![IEAM Add Edge Device Service](screenshots/VM-IEAM-Services-EdgeDevice-tile.png)
-  - Give your service a name, eg `speedtest-mqtt-example-<yourname>`, a Service version number, and a path to the Docker container that was pushed, eg `walicki/speedtest-mqtt-example-instructor:1.0.0`
+  - Give your service a name, eg `speedtest-mqtt-example-<yourname>`, a Service version number, and a path to the Docker container that was pushed, eg `walicki/speedtest-mqtt-example-instructor:2.0.0`
     ![IEAM Define Service](screenshots/VM-IEAM-Services-define-service.png)
   - Press the **Next** button to skip the service variables panel.
   - Name your container eg `IEAM-speedtest` and press the **Next** button.
@@ -407,7 +407,7 @@ The source / instructions to build the container are posted in the [ieam-speedte
 - Now that the Service is defined, add a pattern
   - Select the **Patterns** tab and click on the **Add pattern** button.
     ![IEAM Add Pattern](screenshots/VM-IEAM-Pattern-Add.png)
-  - Give your pattern a name, eg `think/pattern-speedtest-mqtt-example-instructor` and click the **Next** button.
+  - Give your pattern a name, eg `pattern-speedtest-mqtt-example-instructor` and click the **Next** button.
     ![IEAM Name Pattern](screenshots/VM-IEAM-Pattern-name.png)
   - Search/Find the `speedtest-mqtt-example-<yourname>` service, press the **Add +** button and the **Next** button.
     ![Add a deployment pattern](screenshots/VM-IEAM-Pattern-deploy.png)
@@ -420,13 +420,11 @@ The source / instructions to build the container are posted in the [ieam-speedte
   hzn unregister -v
   make register-pattern
   watch hzn agreement list
-  ...
-  make test
   ```
 
-- Observe the Speedtest bandwidth measured by your containerize workload by visiting [Watson IoT Platform Quickstart](https://quickstart.internetofthings.ibmcloud.com).  Enter your unique HZN_DEVICE_ID environment variable to something unique which will allow you to observe your "edge" device in the QuickStart chart page  eg `think-edge-<yourname>`, then press the **Next** button.
+- Observe the Speedtest bandwidth measured by your containerize workload by viewing the instructors Speedtest Dashboard 
 
-  ![Quickstart Chart of Speedtest bandwidth results](screenshots/Speedtest-Quickstart-results.png)
+  ![Chart of Speedtest bandwidth results](https://raw.githubusercontent.com/johnwalicki/ieam-speedtest-mqtt/main/Speedtest-MQTT-results.png)
 
 <div style="page-break-after: always"></div>
 
