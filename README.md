@@ -10,18 +10,13 @@ Gain hands-on experience with the IBM Edge Application Manager web management co
 
 This Code@Think lab session is available for IBM Think 2021 conference attendees (Sign up for Free!)
 
-- Wednesday, May 12, 2021 3:00 PM to 5:00 PM EDT
-
 ## Prerequistes
 
 - Create a free [IBM Cloud account](https://cloud.ibm.com/registration)
-- [Sign up](https://ibm.app.swapcard.com/event/think21) for [Think 2021](https://www.ibm.com/events/think/)
-- Register for the [Introduction to IEAM lab](https://ibm.app.swapcard.com/event/think21/planning/UGxhbm5pbmdfNDQyMTk4)
-- Join us on Wednesday, May 12, 2021 3:00 PM to 5:00 PM EDT by logging into the [Think portal](https://ibm.app.swapcard.com/event/think21/my-visit/my-schedule)
 
 ## Lab Objectives
 
-- Access the Think 2021 Lab virtual machine environment
+- Access the IBM Edge Application Manager Lab virtual machine environment
 - Learn about IEAM components
 - Explore the IEAM web console
 - Register an Edge node
